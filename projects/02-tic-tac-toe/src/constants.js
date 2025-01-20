@@ -1,4 +1,4 @@
-export const TURN = {
+export const TURNS = {
   X: '✕',
   O: '◯'
 }

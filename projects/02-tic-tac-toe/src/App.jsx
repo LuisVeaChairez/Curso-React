@@ -2,19 +2,30 @@ import { useState } from "react";
 import confetti from "canvas-confetti";
 
 import { Square } from "./components/Square.jsx";
-import { TURN } from "./Constants.js";
+import { TURNS } from "./Constants.js";
 import { checkWinnerFrom, checkEndGame } from "./logic/board.js";
 import { WinnerModal } from "./components/WinnerModal.jsx";
+import { saveGameToStorage, resetGameStorage } from "./logic/index.js";
 
 function App () {
-  const [turn, setTurn] = useState(TURN.X)
-  const [board, setBoard] = useState(Array(9).fill(null))
-  const [winner, setWinner] = useState(null) // null es no, false es empate, true es winner
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem('board')
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
+  })
+
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem('turn') 
+    return turnFromStorage ?? TURNS.X
+  })
+  // null es no, false es empate, true es winner
+  const [winner, setWinner] = useState(null) 
 
   const resetGame = () => {
     setBoard(Array(9).fill(null))
-    setTurn(TURN.X)
+    setTurn(TURNS.X)
     setWinner(null)
+
+    resetGameStorage()
   }
 
   const updateBoard = (index) => {
@@ -26,8 +37,13 @@ function App () {
     newBoard[index] = turn
     setBoard(newBoard)
     // cambiar el turno
-    const newTurn = turn == TURN.X ? TURN.O : TURN.X
+    const newTurn = turn == TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
+    // guarda partida
+    saveGameToStorage({
+      board: newBoard,
+      turn: newTurn
+    })
     // revisar si hay ganador
     const newWinner = checkWinnerFrom(newBoard)
     if (newWinner) {
@@ -58,11 +74,11 @@ function App () {
         }
       </div>
       <section className="turn">
-        <Square isSelected={turn==TURN.X}>
-          {TURN.X}
+        <Square isSelected={turn==TURNS.X}>
+          {TURNS.X}
         </Square>
-        <Square isSelected={turn==TURN.O}>
-          {TURN.O}
+        <Square isSelected={turn==TURNS.O}>
+          {TURNS.O}
         </Square>
       </section>
       <section>
