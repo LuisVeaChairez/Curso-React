@@ -16,5 +16,8 @@
     "url": "https://github.com/LuisVeaChairez/Curso-React/issues"
   },
   "homepage": "https://github.com/LuisVeaChairez/Curso-React#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "standard": "^17.1.2"
+  }
 }
